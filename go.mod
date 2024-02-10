@@ -1,4 +1,4 @@
-module spreads
+module github.com/go-numb/go-spread-utils
 
 go 1.22.0
 

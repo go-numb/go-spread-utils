@@ -6,7 +6,8 @@ import (
 	"io"
 	"log"
 	"os"
-	"spreads"
+
+	spreads "github.com/go-numb/go-spread-utils"
 )
 
 const (
