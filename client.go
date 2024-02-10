@@ -17,8 +17,19 @@ type Client struct {
 	rangeKey  string
 }
 
-func New(ctx context.Context, cred []byte) *Client {
-	config, err := sheets.NewService(ctx, option.WithCredentialsJSON(cred))
+func New(ctx context.Context, credFIleOrByteData any) *Client {
+	var op option.ClientOption
+	switch v := credFIleOrByteData.(type) {
+	case string:
+		op = option.WithCredentialsFile(v)
+	case []byte:
+		op = option.WithCredentialsJSON(v)
+
+	default:
+		log.Fatal("invalid type")
+	}
+
+	config, err := sheets.NewService(ctx, op)
 	if err != nil {
 		log.Fatal(err)
 		return nil
