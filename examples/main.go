@@ -49,13 +49,18 @@ func main() {
 
 	fmt.Printf("------------\n%+v\n------------\n", rows)
 
-	// Update row number 1, with header
+	// Update rows, with header
 	records := df.Subset([]int{1}).Records()
 	// string to interface row, and drop header
 	recordsAny := spreads.ConvertStringToInterface(records)
+	if err := client.SetRangeKey("A1:Z").Update(recordsAny); err != nil {
+		log.Fatal(err)
+	}
+
 	// drop header
 	updateRow := recordsAny[1]
-	if err := client.Update(updateRow); err != nil {
+	// Update row
+	if err := client.SetRangeKey("A4:Z4").UpdateRow(updateRow); err != nil {
 		log.Fatal(err)
 	}
 
