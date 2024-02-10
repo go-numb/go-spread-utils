@@ -94,4 +94,4 @@ In this example, the spreads package is used to read data from a Google spreadsh
 
 ## Documentation
 
-For more detailed information on how to use spreads package, please refer to the [GoDoc documentation](https://pkg.go.dev/github.com/go-numb/spreads).
+For more detailed information on how to use spreads package, please refer to the [GoDoc documentation](https://pkg.go.dev/github.com/go-numb/go-spread-utils).
