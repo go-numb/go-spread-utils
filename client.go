@@ -2,7 +2,9 @@ package spreads
 
 import (
 	"context"
+	"fmt"
 	"log"
+	"os"
 
 	"google.golang.org/api/option"
 	"google.golang.org/api/sheets/v4"
@@ -18,21 +20,41 @@ type Client struct {
 }
 
 func New(ctx context.Context, credFIleOrByteData any) *Client {
-	var op option.ClientOption
+	var (
+		config *sheets.Service
+		err    error
+	)
 	switch v := credFIleOrByteData.(type) {
 	case string:
-		op = option.WithCredentialsFile(v)
+		if f, err := os.Stat(v); err == nil && !f.IsDir() {
+			config, err = sheets.NewService(ctx, option.WithCredentialsFile(v))
+			if err != nil {
+				log.Fatal(fmt.Errorf("failed to create new service with credential file, error: %v", err))
+				return nil
+			}
+		}
+
 	case []byte:
-		op = option.WithCredentialsJSON(v)
+		config, err = sheets.NewService(ctx, option.WithCredentialsJSON(v))
+		if err != nil {
+			log.Fatal(fmt.Errorf("failed to create new service with credential byte data, error: %v", err))
+			return nil
+		}
+
+	case nil:
+		// production or gcloud auth
+		config, err = sheets.NewService(ctx)
+		if err != nil {
+			log.Fatal(fmt.Errorf("failed to create new service with gcloud auth, error: %v", err))
+			return nil
+		}
 
 	default:
-		log.Fatal("invalid type")
-	}
-
-	config, err := sheets.NewService(ctx, op)
-	if err != nil {
-		log.Fatal(err)
-		return nil
+		config, err = sheets.NewService(ctx)
+		if err != nil {
+			log.Println(err)
+			return nil
+		}
 	}
 
 	return &Client{
