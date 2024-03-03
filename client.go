@@ -32,6 +32,12 @@ func New(ctx context.Context, credFIleOrByteData any) *Client {
 				log.Fatal(fmt.Errorf("failed to create new service with credential file, error: %v", err))
 				return nil
 			}
+		} else {
+			config, err = sheets.NewService(ctx)
+			if err != nil {
+				log.Fatal(fmt.Errorf("failed to create new service with gcloud auth, error: %v", err))
+				return nil
+			}
 		}
 
 	case []byte:
